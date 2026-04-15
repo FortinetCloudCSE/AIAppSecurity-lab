@@ -1,5 +1,5 @@
 AWSTemplateFormatVersion: '2010-09-09'
-Description: CloudFormation template to create a VPC, security group, key pair, Ubuntu EC2 instance for FortiCNAPP Training with SSM access.
+Description: CloudFormation template to create a VPC, security group, key pair, Ubuntu EC2 instance for AIAPP with SSM access.
 
 Parameters:
   LatestUbuntuAmiId:
@@ -10,7 +10,7 @@ Parameters:
 Resources:
 
   # VPC
-  FortiCNAPPVPC:
+  AIAPPVPC:
     Type: AWS::EC2::VPC
     Properties: 
       CidrBlock: "10.0.0.0/16"
@@ -18,66 +18,66 @@ Resources:
       EnableDnsHostnames: "true"
       Tags:
         - Key: Name
-          Value: FortiCNAPP-VPC
+          Value: AIAPP-VPC
 
   # Subnet (Public)
-  FortiCNAPPSubnet:
+  AIAPPSubnet:
     Type: AWS::EC2::Subnet
     Properties:
-      VpcId: !Ref FortiCNAPPVPC
+      VpcId: !Ref AIAPPVPC
       CidrBlock: "10.0.0.0/24"
       AvailabilityZone: !Select [ 0, !GetAZs '' ]
       MapPublicIpOnLaunch: "true"
       Tags:
         - Key: Name
-          Value: FortiCNAPP-Subnet
+          Value: AIAPP-Subnet
 
   # Internet Gateway (to allow internet access)
-  FortiCNAPPInternetGateway:
+  AIAPPInternetGateway:
     Type: AWS::EC2::InternetGateway
     Properties:
       Tags:
         - Key: Name
-          Value: FortiCNAPP-InternetGateway
+          Value: AIAPP-InternetGateway
 
   # Attach Internet Gateway to VPC
-  FortiCNAPPAttachGateway:
+  AIAPPAttachGateway:
     Type: AWS::EC2::VPCGatewayAttachment
     Properties:
-      VpcId: !Ref FortiCNAPPVPC
-      InternetGatewayId: !Ref FortiCNAPPInternetGateway
+      VpcId: !Ref AIAPPVPC
+      InternetGatewayId: !Ref AIAPPInternetGateway
 
   # Route Table for Public Access
-  FortiCNAPPRouteTable:
+  AIAPPRouteTable:
     Type: AWS::EC2::RouteTable
     Properties:
-      VpcId: !Ref FortiCNAPPVPC
+      VpcId: !Ref AIAPPVPC
       Tags:
         - Key: Name
-          Value: FortiCNAPP-PublicRouteTable
+          Value: AIAPP-PublicRouteTable
 
   # Route to Internet Gateway
-  FortiCNAPPRoute:
+  AIAPPRoute:
     Type: AWS::EC2::Route
-    DependsOn: FortiCNAPPAttachGateway
+    DependsOn: AIAPPAttachGateway
     Properties:
-      RouteTableId: !Ref FortiCNAPPRouteTable
+      RouteTableId: !Ref AIAPPRouteTable
       DestinationCidrBlock: "0.0.0.0/0"
-      GatewayId: !Ref FortiCNAPPInternetGateway
+      GatewayId: !Ref AIAPPInternetGateway
 
   # Associate Route Table with Subnet
-  FortiCNAPPRouteTableAssociation:
+  AIAPPRouteTableAssociation:
     Type: AWS::EC2::SubnetRouteTableAssociation
     Properties:
-      SubnetId: !Ref FortiCNAPPSubnet
-      RouteTableId: !Ref FortiCNAPPRouteTable
+      SubnetId: !Ref AIAPPSubnet
+      RouteTableId: !Ref AIAPPRouteTable
 
   # Security Group that allows SSH (port 22) from anywhere and outbound internet access
-  FortiCNAPPSecurityGroup:
+  AIAPPSecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
       GroupDescription: "Allow SSH access and internet access"
-      VpcId: !Ref FortiCNAPPVPC
+      VpcId: !Ref AIAPPVPC
       SecurityGroupIngress:
         - IpProtocol: tcp
           FromPort: '22'
@@ -92,7 +92,7 @@ Resources:
           CidrIp: "0.0.0.0/0"  # Allow outbound access for SSM
 
   # IAM Role to allow EC2 instance to communicate with SSM
-  FortiCNAPPSsmRole:
+  AIAPPSsmRole:
     Type: AWS::IAM::Role
     Properties:
       RoleName: {"Fn::Join": ["", [{"Ref": "AWS::Region"}, "CloudLabRole"]]}
@@ -109,53 +109,56 @@ Resources:
         - arn:aws:iam::aws:policy/AdministratorAccess
       Tags:
         - Key: Name
-          Value: FortiCNAPP-SSMRole
+          Value: AIAPP-SSMRole
 
   # Attach IAM Role to EC2 Instance
-  FortiCNAPPInstanceProfile:
+  AIAPPInstanceProfile:
     Type: AWS::IAM::InstanceProfile
     Properties:
       Roles:
-        - !Ref FortiCNAPPSsmRole
+        - !Ref AIAPPSsmRole
 
   # Key Pair (Automatically Created)
-  FortiCNAPPKeyPair:
+  AIAPPKeyPair:
     Type: AWS::EC2::KeyPair
     Properties:
-      KeyName: FortiCNAPPKey
+      KeyName: AIAPPKey
       Tags:
         - Key: Name
-          Value: FortiCNAPPKey
+          Value: AIAPPKey
 
   # Ubuntu EC2 Instance
-  FortiCNAPPEC2Instance:
+  AIAPPEC2Instance:
     Type: AWS::EC2::Instance
     Properties:
       InstanceType: t2.micro
       ImageId: !Ref LatestUbuntuAmiId
       SecurityGroupIds:
-        - !Ref FortiCNAPPSecurityGroup
-      SubnetId: !Ref FortiCNAPPSubnet
-      KeyName: !Ref FortiCNAPPKeyPair
-      IamInstanceProfile: !Ref FortiCNAPPInstanceProfile
+        - !Ref AIAPPSecurityGroup
+      SubnetId: !Ref AIAPPSubnet
+      KeyName: !Ref AIAPPKeyPair
+      IamInstanceProfile: !Ref AIAPPInstanceProfile
       Tags:
         - Key: Name
-          Value: FortiCNAPP-UbuntuInstance
+          Value: AIAPP-UbuntuInstance
       AvailabilityZone: !Select [ 0, !GetAZs '' ]
       UserData:
         Fn::Base64:
           !Sub |
             #!/bin/bash
             sudo apt update
-            sudo apt install -y gnupg software-properties-common zip curl unzip
+            sudo apt install -y gnupg software-properties-common zip curl unzip snapd
             wget -O- https://apt.releases.hashicorp.com/gpg | gpg --dearmor | sudo tee /usr/share/keyrings/hashicorp-archive-keyring.gpg > /dev/null
             echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/hashicorp.list
             sudo apt update
             sudo apt install -y terraform
             sudo apt install -y nodejs npm
             sudo apt install -y docker.io
+            sudo snap install amazon-ssm-agent --classic || true
             sudo systemctl enable docker
             sudo systemctl start docker
+            sudo systemctl enable snap.amazon-ssm-agent.amazon-ssm-agent.service || true
+            sudo systemctl start snap.amazon-ssm-agent.amazon-ssm-agent.service || true
             sudo usermod -aG docker ubuntu
             curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
             unzip -qq awscliv2.zip
@@ -165,16 +168,32 @@ Outputs:
 
   InstanceId:
     Description: "Instance ID"
-    Value: !Ref FortiCNAPPEC2Instance
+    Value: !Ref AIAPPEC2Instance
 
   VPCId:
     Description: "VPC ID"
-    Value: !Ref FortiCNAPPVPC
+    Value: !Ref AIAPPVPC
 
   SecurityGroupId:
     Description: "Security Group ID"
-    Value: !Ref FortiCNAPPSecurityGroup
+    Value: !Ref AIAPPSecurityGroup
+
+  InstancePublicIp:
+    Description: "Public IP address of the EC2 instance"
+    Value: !GetAtt AIAPPEC2Instance.PublicIp
+
+  InstancePublicDns:
+    Description: "Public DNS name of the EC2 instance"
+    Value: !GetAtt AIAPPEC2Instance.PublicDnsName
+
+  AppUrl:
+    Description: "Application URL on port 8080"
+    Value: !Sub "http://${AIAPPEC2Instance.PublicDnsName}:8080"
+
+  SsmRoleName:
+    Description: "IAM role attached for Systems Manager access"
+    Value: !Ref AIAPPSsmRole
 
   KeyPairName:
     Description: "The name of the SSH key pair"
-    Value: !Ref FortiCNAPPKeyPair
+    Value: !Ref AIAPPKeyPair
