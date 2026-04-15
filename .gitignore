@@ -7,3 +7,6 @@ package-lock.json
 package.json
 /venv
 fortihugorunner
+app/.env.local
+app/.env
+*.pem
