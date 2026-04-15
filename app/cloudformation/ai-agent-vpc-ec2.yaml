@@ -1,187 +1,180 @@
 AWSTemplateFormatVersion: '2010-09-09'
-Description: Minimal VPC and EC2 instance for running the AI Agent app with Docker
+Description: CloudFormation template to create a VPC, security group, key pair, Ubuntu EC2 instance for FortiCNAPP Training with SSM access.
 
 Parameters:
-  VpcCidr:
-    Type: String
-    Default: 10.0.0.0/16
-    Description: CIDR block for the VPC
-
-  PublicSubnetCidr:
-    Type: String
-    Default: 10.0.1.0/24
-    Description: CIDR block for the public subnet
-
-  AvailabilityZone:
-    Type: AWS::EC2::AvailabilityZone::Name
-    Description: Availability Zone for the public subnet
-
-  InstanceType:
-    Type: String
-    Default: t3.small
-    AllowedValues:
-      - t3.micro
-      - t3.small
-      - t3.medium
-      - t3.large
-      - t2.micro
-    Description: EC2 instance type
-
-  KeyName:
-    Type: AWS::EC2::KeyPair::KeyName
-    Description: Existing EC2 key pair for SSH access
-
-  MyIpCidr:
-    Type: String
-    Default: 0.0.0.0/0
-    Description: CIDR allowed to SSH to the instance
-
-  AppPort:
-    Type: Number
-    Default: 8080
-    Description: Public application port
-
-  LatestAmiId:
+  LatestUbuntuAmiId:
     Type: AWS::SSM::Parameter::Value<AWS::EC2::Image::Id>
-    Default: /aws/service/ami-amazon-linux-latest/al2023-ami-kernel-default-x86_64
-    Description: Amazon Linux 2023 AMI from SSM public parameter
+    Default: /aws/service/canonical/ubuntu/server/24.04/stable/current/amd64/hvm/ebs-gp3/ami-id
+    Description: Latest Ubuntu 24.04 LTS AMI from the public SSM parameter store
 
 Resources:
-  DemoVPC:
+
+  # VPC
+  FortiCNAPPVPC:
     Type: AWS::EC2::VPC
-    Properties:
-      CidrBlock: !Ref VpcCidr
-      EnableDnsSupport: true
-      EnableDnsHostnames: true
+    Properties: 
+      CidrBlock: "10.0.0.0/16"
+      EnableDnsSupport: "true"
+      EnableDnsHostnames: "true"
       Tags:
         - Key: Name
-          Value: ai-agent-vpc
+          Value: FortiCNAPP-VPC
 
-  InternetGateway:
+  # Subnet (Public)
+  FortiCNAPPSubnet:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref FortiCNAPPVPC
+      CidrBlock: "10.0.0.0/24"
+      AvailabilityZone: !Select [ 0, !GetAZs '' ]
+      MapPublicIpOnLaunch: "true"
+      Tags:
+        - Key: Name
+          Value: FortiCNAPP-Subnet
+
+  # Internet Gateway (to allow internet access)
+  FortiCNAPPInternetGateway:
     Type: AWS::EC2::InternetGateway
     Properties:
       Tags:
         - Key: Name
-          Value: ai-agent-igw
+          Value: FortiCNAPP-InternetGateway
 
-  VPCGatewayAttachment:
+  # Attach Internet Gateway to VPC
+  FortiCNAPPAttachGateway:
     Type: AWS::EC2::VPCGatewayAttachment
     Properties:
-      VpcId: !Ref DemoVPC
-      InternetGatewayId: !Ref InternetGateway
+      VpcId: !Ref FortiCNAPPVPC
+      InternetGatewayId: !Ref FortiCNAPPInternetGateway
 
-  PublicSubnet:
-    Type: AWS::EC2::Subnet
-    Properties:
-      VpcId: !Ref DemoVPC
-      CidrBlock: !Ref PublicSubnetCidr
-      MapPublicIpOnLaunch: true
-      AvailabilityZone: !Ref AvailabilityZone
-      Tags:
-        - Key: Name
-          Value: ai-agent-public-subnet
-
-  PublicRouteTable:
+  # Route Table for Public Access
+  FortiCNAPPRouteTable:
     Type: AWS::EC2::RouteTable
     Properties:
-      VpcId: !Ref DemoVPC
+      VpcId: !Ref FortiCNAPPVPC
       Tags:
         - Key: Name
-          Value: ai-agent-public-rt
+          Value: FortiCNAPP-PublicRouteTable
 
-  DefaultPublicRoute:
+  # Route to Internet Gateway
+  FortiCNAPPRoute:
     Type: AWS::EC2::Route
-    DependsOn: VPCGatewayAttachment
+    DependsOn: FortiCNAPPAttachGateway
     Properties:
-      RouteTableId: !Ref PublicRouteTable
-      DestinationCidrBlock: 0.0.0.0/0
-      GatewayId: !Ref InternetGateway
+      RouteTableId: !Ref FortiCNAPPRouteTable
+      DestinationCidrBlock: "0.0.0.0/0"
+      GatewayId: !Ref FortiCNAPPInternetGateway
 
-  PublicSubnetRouteTableAssociation:
+  # Associate Route Table with Subnet
+  FortiCNAPPRouteTableAssociation:
     Type: AWS::EC2::SubnetRouteTableAssociation
     Properties:
-      SubnetId: !Ref PublicSubnet
-      RouteTableId: !Ref PublicRouteTable
+      SubnetId: !Ref FortiCNAPPSubnet
+      RouteTableId: !Ref FortiCNAPPRouteTable
 
-  InstanceSecurityGroup:
+  # Security Group that allows SSH (port 22) from anywhere and outbound internet access
+  FortiCNAPPSecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
-      GroupDescription: Security group for AI Agent EC2 host
-      VpcId: !Ref DemoVPC
+      GroupDescription: "Allow SSH access and internet access"
+      VpcId: !Ref FortiCNAPPVPC
       SecurityGroupIngress:
         - IpProtocol: tcp
-          FromPort: 22
-          ToPort: 22
-          CidrIp: !Ref MyIpCidr
+          FromPort: '22'
+          ToPort: '22'
+          CidrIp: "0.0.0.0/0"
         - IpProtocol: tcp
-          FromPort: !Ref AppPort
-          ToPort: !Ref AppPort
-          CidrIp: 0.0.0.0/0
+          FromPort: '8080'
+          ToPort: '8080'
+          CidrIp: "0.0.0.0/0"
       SecurityGroupEgress:
-        - IpProtocol: -1
-          CidrIp: 0.0.0.0/0
+        - IpProtocol: "-1"
+          CidrIp: "0.0.0.0/0"  # Allow outbound access for SSM
+
+  # IAM Role to allow EC2 instance to communicate with SSM
+  FortiCNAPPSsmRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: {"Fn::Join": ["", [{"Ref": "AWS::Region"}, "CloudLabRole"]]}
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: ec2.amazonaws.com
+            Action: sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore
+        - arn:aws:iam::aws:policy/AmazonEC2FullAccess
+        - arn:aws:iam::aws:policy/AdministratorAccess
       Tags:
         - Key: Name
-          Value: ai-agent-sg
+          Value: FortiCNAPP-SSMRole
 
-  AppInstance:
+  # Attach IAM Role to EC2 Instance
+  FortiCNAPPInstanceProfile:
+    Type: AWS::IAM::InstanceProfile
+    Properties:
+      Roles:
+        - !Ref FortiCNAPPSsmRole
+
+  # Key Pair (Automatically Created)
+  FortiCNAPPKeyPair:
+    Type: AWS::EC2::KeyPair
+    Properties:
+      KeyName: FortiCNAPPKey
+      Tags:
+        - Key: Name
+          Value: FortiCNAPPKey
+
+  # Ubuntu EC2 Instance
+  FortiCNAPPEC2Instance:
     Type: AWS::EC2::Instance
     Properties:
-      ImageId: !Ref LatestAmiId
-      InstanceType: !Ref InstanceType
-      KeyName: !Ref KeyName
-      NetworkInterfaces:
-        - AssociatePublicIpAddress: true
-          DeviceIndex: '0'
-          GroupSet:
-            - !Ref InstanceSecurityGroup
-          SubnetId: !Ref PublicSubnet
-      BlockDeviceMappings:
-        - DeviceName: /dev/xvda
-          Ebs:
-            VolumeSize: 20
-            VolumeType: gp3
-            DeleteOnTermination: true
-      UserData:
-        Fn::Base64: !Sub |
-          #!/bin/bash
-          set -euxo pipefail
-          dnf update -y
-          dnf install -y docker git
-          systemctl enable docker
-          systemctl start docker
-          usermod -aG docker ec2-user
-          mkdir -p /opt/ai-agent
-          chown ec2-user:ec2-user /opt/ai-agent
+      InstanceType: t2.micro
+      ImageId: !Ref LatestUbuntuAmiId
+      SecurityGroupIds:
+        - !Ref FortiCNAPPSecurityGroup
+      SubnetId: !Ref FortiCNAPPSubnet
+      KeyName: !Ref FortiCNAPPKeyPair
+      IamInstanceProfile: !Ref FortiCNAPPInstanceProfile
       Tags:
         - Key: Name
-          Value: ai-agent-ec2
+          Value: FortiCNAPP-UbuntuInstance
+      AvailabilityZone: !Select [ 0, !GetAZs '' ]
+      UserData:
+        Fn::Base64:
+          !Sub |
+            #!/bin/bash
+            sudo apt update
+            sudo apt install -y gnupg software-properties-common zip curl unzip
+            wget -O- https://apt.releases.hashicorp.com/gpg | gpg --dearmor | sudo tee /usr/share/keyrings/hashicorp-archive-keyring.gpg > /dev/null
+            echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/hashicorp.list
+            sudo apt update
+            sudo apt install -y terraform
+            sudo apt install -y nodejs npm
+            sudo apt install -y docker.io
+            sudo systemctl enable docker
+            sudo systemctl start docker
+            sudo usermod -aG docker ubuntu
+            curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+            unzip -qq awscliv2.zip
+            sudo ./aws/install
 
 Outputs:
-  VpcId:
-    Description: VPC ID
-    Value: !Ref DemoVPC
-
-  PublicSubnetId:
-    Description: Public subnet ID
-    Value: !Ref PublicSubnet
-
-  SecurityGroupId:
-    Description: Security group ID
-    Value: !Ref InstanceSecurityGroup
 
   InstanceId:
-    Description: EC2 instance ID
-    Value: !Ref AppInstance
+    Description: "Instance ID"
+    Value: !Ref FortiCNAPPEC2Instance
 
-  InstancePublicIp:
-    Description: Public IP address of the EC2 instance
-    Value: !GetAtt AppInstance.PublicIp
+  VPCId:
+    Description: "VPC ID"
+    Value: !Ref FortiCNAPPVPC
 
-  AppUrl:
-    Description: URL for the application after you start Docker on the instance
-    Value: !Sub "http://${AppInstance.PublicDnsName}:${AppPort}"
+  SecurityGroupId:
+    Description: "Security Group ID"
+    Value: !Ref FortiCNAPPSecurityGroup
 
-  SshCommand:
-    Description: Sample SSH command
-    Value: !Sub "ssh -i /path/to/your-key.pem ec2-user@${AppInstance.PublicDnsName}"
+  KeyPairName:
+    Description: "The name of the SSH key pair"
+    Value: !Ref FortiCNAPPKeyPair

@@ -17,9 +17,17 @@ A small Python web app with a public HTML frontend and two agent tools:
 
 You can build and run the container directly with the included shell script.
 
+By default, the script will source:
+
+- .env.local
+
+You can also point it to a different file:
+
+ENV_FILE=/path/to/your.env ./run_docker.sh
+
 Example:
 
-OPENAI_API_KEY=your_key HOST_PORT=8080 ./run_docker.sh
+HOST_PORT=8080 ./run_docker.sh
 
 Optional environment variables supported by the script include:
 

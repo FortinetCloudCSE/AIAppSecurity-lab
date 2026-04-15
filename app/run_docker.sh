@@ -2,6 +2,14 @@
 set -euo pipefail
 
 APP_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+ENV_FILE="${ENV_FILE:-${APP_DIR}/.env}"
+
+if [[ -f "${ENV_FILE}" ]]; then
+  set -a
+  source "${ENV_FILE}"
+  set +a
+fi
+
 IMAGE_NAME="${IMAGE_NAME:-ai-agent-local}"
 CONTAINER_NAME="${CONTAINER_NAME:-ai-agent-local}"
 HOST_PORT="${HOST_PORT:-8080}"
