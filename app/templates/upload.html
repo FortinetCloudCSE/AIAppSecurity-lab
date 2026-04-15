@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AI Agent</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+  </head>
+  <body>
+    <div class="upload-shell">
+      <div class="upload-panel">
+        <div class="upload-header">
+          <h1>AI Agent</h1>
+          <p>Upload a file for processing</p>
+        </div>
+
+        <form class="upload-form" action="/upload" method="post" enctype="multipart/form-data">
+          <input type="file" name="resume" required />
+          <button type="submit">Upload</button>
+        </form>
+
+        {% if upload_status %}
+        <div class="status-box">{{ upload_status }}</div>
+        {% endif %}
+      </div>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AI Agent</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+  </head>
+  <body>
+    <div class="chat-shell">
+      <div class="chat-panel">
+        <div class="chat-header">
+          <div>
+            <h1>AI Agent</h1>
+            <p>Your conversation assistant</p>
+          </div>
+        </div>
+
+        <div class="chat-messages" id="chat-messages">
+          {% for message in messages %}
+          <div class="message-row {{ message.role }}">
+            <div class="message-bubble">
+              {% if message.role != 'user' %}
+              <div class="message-role">AI AGENT:</div>
+              {% endif %}
+              <div class="message-content">{{ message.content }}</div>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+
+        <form class="chat-form" action="/chat" method="post">
+          <input type="text" name="prompt" placeholder="Message AI Agent" required />
+          <button type="submit">Send</button>
+        </form>
+      </div>
+    </div>
+
+    <script>
+      window.addEventListener('load', () => {
+        const chatMessages = document.getElementById('chat-messages');
+        if (chatMessages) {
+          chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+      });
+    </script>
+  </body>
+</html>
