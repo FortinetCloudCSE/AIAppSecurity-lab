@@ -5,7 +5,7 @@ from pathlib import Path
 
 import boto3
 
-ALLOWED_COMMANDS = {"echo", "pwd", "ls", "whoami", "uname", "date"}
+DISALLOWED_COMMANDS = {"sh"}
 
 
 def read_resume_text(location: str) -> str:
@@ -35,7 +35,7 @@ def run_command(command: str) -> dict:
     parts = shlex.split(command)
     base = parts[0]
 
-    if base not in ALLOWED_COMMANDS:
+    if base in DISALLOWED_COMMANDS:
         return {
             "blocked": True,
             "stdout": "",
