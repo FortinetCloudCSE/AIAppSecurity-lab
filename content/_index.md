@@ -150,7 +150,7 @@ IP=$(curl -s ipinfo.io/ip)
 echo "Browse to http://$IP:8080"
 ```
 
-    [![](https://github.com/FortinetCloudCSE/AIAppSecurity-lab/blob/main/content/9.png?raw=true)](https://github.com/FortinetCloudCSE/AIAppSecurity-lab/blob/main/content/9.png?raw=true)
+[![](https://github.com/FortinetCloudCSE/AIAppSecurity-lab/blob/main/content/9.png?raw=true)](https://github.com/FortinetCloudCSE/AIAppSecurity-lab/blob/main/content/9.png?raw=true)
 
 
 Ask the agent questions about the AWS account.
@@ -234,4 +234,17 @@ The application is designed to color the human request as well as each step deci
     [![](https://github.com/FortinetCloudCSE/AIAppSecurity-lab/blob/main/content/19.png?raw=true)](https://github.com/FortinetCloudCSE/AIAppSecurity-lab/blob/main/content/19.png?raw=true)
 
 
-## ministep 2
+Congratulations, You have successfully exploited the application by injecting a prompt through the resume upload functionality. This is a classic example of an indirect prompt injection, where an attacker can manipulate the input to an AI system in order to make it perform unintended actions.
+
+
+### Challenge 1
+
+Can you modify the `my_resume.txt` file to make the agent run a different command? For example, you can try to make it list all the files in the home directory by changing the command to `ls -la ~`.
+
+### Challenge 2 (More serious)
+
+Can you modify the malicious prompts so that you pivot from the AI agent into the AWS infrastrucure?
+
+Hist: Use IMDS
+
+Good luck and Thank you for attending the lab!
