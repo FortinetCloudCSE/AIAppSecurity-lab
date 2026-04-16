@@ -18,33 +18,31 @@ description: "Workshops"
 
 2. When the lab is ready, click Open Console. Copy the username, password, and AWS account ID shown on the page because you will need them for sign-in.
 
-[![](/img/2.png)](/img/2.png)
+[![](https://github.com/FortinetCloudCSE/AIAppSecurity-lab/blob/main/content/2.png?raw=true)](https://github.com/FortinetCloudCSE/AIAppSecurity-lab/blob/main/content/2.png?raw=true)
 
 3. Sign in as an IAM user with the provided AWS account ID, IAM username, and password, then click Sign in.
 
-    [![](3.png)](3.png)
-
-    {{< figure src="3.png" >}}
+	[![](https://github.com/FortinetCloudCSE/AIAppSecurity-lab/blob/main/content/3.png?raw=true)](https://github.com/FortinetCloudCSE/AIAppSecurity-lab/blob/main/content/3.png?raw=true)
 
 1. In the AWS console search bar, enter EC2 and select the EC2 service.
 
-[![](/img/4.png)](/img/4.png)
+[![](https://github.com/FortinetCloudCSE/AIAppSecurity-lab/blob/main/content/4.png?raw=true)](https://github.com/FortinetCloudCSE/AIAppSecurity-lab/blob/main/content/4.png?raw=true)
 
 5. From the EC2 dashboard, click Instances running or select Instances from the left navigation.
 
-[![](/img/5.png)](/img/5.png)
+[![](https://github.com/FortinetCloudCSE/AIAppSecurity-lab/blob/main/content/5.png?raw=true)](https://github.com/FortinetCloudCSE/AIAppSecurity-lab/blob/main/content/5.png?raw=true)
 
 6. Select the running lab instance, open the Connect actions menu, and choose Connect.
 
-[![](/img/6.png)](/img/6.png)
+[![](https://github.com/FortinetCloudCSE/AIAppSecurity-lab/blob/main/content/6.png?raw=true)](https://github.com/FortinetCloudCSE/AIAppSecurity-lab/blob/main/content/6.png?raw=true)
 
 7. In the Connect to instance page, open the SSM Session Manager tab and click Connect.
 
-[![](/img/7.png)](/img/7.png)
+[![](https://github.com/FortinetCloudCSE/AIAppSecurity-lab/blob/main/content/7.png?raw=true)](https://github.com/FortinetCloudCSE/AIAppSecurity-lab/blob/main/content/7.png?raw=true)
 
 8. When the session opens, start a shell by running the command below.
 
-[![](/img/8.png)](/img/8.png)
+[![](https://github.com/FortinetCloudCSE/AIAppSecurity-lab/blob/main/content/8.png?raw=true)](https://github.com/FortinetCloudCSE/AIAppSecurity-lab/blob/main/content/8.png?raw=true)
 
 	```bash
 	bash
