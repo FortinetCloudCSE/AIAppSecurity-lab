@@ -1,5 +1,5 @@
 ---
-title: "AI AApplication Security"
+title: "AI Application Security"
 linkTitle: "AI Application Security"
 weight: 1
 # archetype: "home"
