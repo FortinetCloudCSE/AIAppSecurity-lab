@@ -23,7 +23,7 @@ description: "Workshops"
 
 [![](3.png)](3.png)
 
-{{< figure src="3.png" >}}
+    {{< figure src="3.png" >}}
 
 1. In the AWS console search bar, enter EC2 and select the EC2 service.
 
