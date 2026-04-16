@@ -1,3 +1,4 @@
+import logging
 import os
 from pathlib import Path
 
@@ -6,8 +7,17 @@ from flask import Flask, redirect, render_template, request, session, url_for
 from werkzeug.utils import secure_filename
 
 from agent import ResumeAgent
+from tools import upload_resume_file
 
 load_dotenv()
+
+logging.basicConfig(
+    level=os.getenv("LOG_LEVEL", "INFO").upper(),
+    format="%(asctime)s %(levelname)s [%(name)s] %(message)s",
+)
+logger = logging.getLogger(__name__)
+PROMPT_COLOR = "\033[96m"
+COLOR_RESET = "\033[0m"
 
 BASE_DIR = Path(__file__).resolve().parent
 UPLOAD_DIR = BASE_DIR / "uploads"
@@ -49,9 +59,15 @@ def upload_resume():
 
     filename = secure_filename(file.filename)
     save_path = UPLOAD_DIR / filename
+    logger.info("upload_received filename=%s save_path=%s", filename, save_path)
     file.save(save_path)
-    session["latest_resume"] = str(save_path)
-    session["upload_status"] = f"Upload complete: {filename}"
+    uploaded_location = upload_resume_file(save_path, filename)
+    logger.info("upload_processed filename=%s stored_at=%s", filename, uploaded_location)
+    session["latest_resume"] = uploaded_location
+    if uploaded_location.startswith("s3://"):
+        session["upload_status"] = f"Upload complete: {filename} to {uploaded_location}"
+    else:
+        session["upload_status"] = f"Upload complete: {filename}"
     return redirect(url_for("upload_resume"))
 
 
@@ -66,7 +82,10 @@ def chat():
         return redirect(url_for("index"))
 
     latest_resume = session.get("latest_resume")
+    logger.info("chat_request latest_resume=%s", latest_resume)
+    logger.info("chat_request_prompt=%s%s%s", PROMPT_COLOR, prompt, COLOR_RESET)
     output = agent.ask(prompt, latest_resume)
+    logger.info("chat_response prompt=%r output_preview=%r", prompt, output[:500])
     messages.extend(
         [
             {"role": "user", "content": prompt},
