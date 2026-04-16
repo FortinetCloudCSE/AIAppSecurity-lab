@@ -10,40 +10,40 @@ description: "Workshops"
 # Start The Lab
 
 1. In the lab portal, click Start Lab if the environment is not already running.
-[![](img/1.png)](img/1.png)
+[![](/img/1.png)](/img/1.png)
 
 ## Access the instance
 
 
 2. When the lab is ready, click Open Console. Copy the username, password, and AWS account ID shown on the page because you will need them for sign-in.
 
-[![](content/img/2.png)](content/img/2.png)
+[![](/img/2.png)](/img/2.png)
 
 3. Sign in as an IAM user with the provided AWS account ID, IAM username, and password, then click Sign in.
 
-[![](img/3.png)](img/3.png)
+[![](/img/3.png)](/img/3.png)
 
-{{< figure src="img/3.png" >}}
+{{< figure src="/img/3.png" >}}
 
 1. In the AWS console search bar, enter EC2 and select the EC2 service.
 
-[![](img/4.png)](img/4.png)
+[![](/img/4.png)](/img/4.png)
 
 5. From the EC2 dashboard, click Instances running or select Instances from the left navigation.
 
-[![](img/5.png)](img/5.png)
+[![](/img/5.png)](/img/5.png)
 
 6. Select the running lab instance, open the Connect actions menu, and choose Connect.
 
-[![](img/6.png)](img/6.png)
+[![](/img/6.png)](/img/6.png)
 
 7. In the Connect to instance page, open the SSM Session Manager tab and click Connect.
 
-[![](img/7.png)](img/7.png)
+[![](/img/7.png)](/img/7.png)
 
 8. When the session opens, start a shell by running the command below.
 
-[![](img/8.png)](img/8.png)
+[![](/img/8.png)](/img/8.png)
 
 	```bash
 	bash
