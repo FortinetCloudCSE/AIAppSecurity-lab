@@ -2,8 +2,8 @@
 title: "AI AApplication Security"
 linkTitle: "AI Application Security"
 weight: 1
-archetype: "home"
-description: "Hugo for AI Application Security Workshops"
+# archetype: "home"
+description: "Workshops"
 ---
 
 
