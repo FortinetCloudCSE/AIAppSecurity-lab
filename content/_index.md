@@ -7,10 +7,11 @@ description: "Workshops"
 ---
 
 
-# Start The Lab
+## Start The Lab
 
 1. In the lab portal, click Start Lab if the environment is not already running.
-[![](/img/1.png)](/img/1.png)
+   
+    [![](/img/1.png)](/img/1.png)
 
 ## Access the instance
 
@@ -21,7 +22,7 @@ description: "Workshops"
 
 3. Sign in as an IAM user with the provided AWS account ID, IAM username, and password, then click Sign in.
 
-[![](3.png)](3.png)
+    [![](3.png)](3.png)
 
     {{< figure src="3.png" >}}
 
