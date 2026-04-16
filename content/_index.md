@@ -21,9 +21,9 @@ description: "Workshops"
 
 3. Sign in as an IAM user with the provided AWS account ID, IAM username, and password, then click Sign in.
 
-[![](/img/3.png)](/img/3.png)
+[![](3.png)](3.png)
 
-{{< figure src="/img/3.png" >}}
+{{< figure src="3.png" >}}
 
 1. In the AWS console search bar, enter EC2 and select the EC2 service.
 
