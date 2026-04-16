@@ -1,15 +1,14 @@
 ---
-title: "Fortinet TECWorkshop Template - MVP2"
-linkTitle: "TECWorkshop Template"
+title: "AI AApplication Security"
+linkTitle: "AI Application Security"
 weight: 1
 archetype: "home"
-description: "Hugo for Fortinet TEC Workshops"
+description: "Hugo for AI Application Security Workshops"
 ---
 
 
-THIS IS A TEST
-
-
+Start By..
+<!-- 
 
 ### {{% badge style="info" color="red" icon="fa-fw fas fa-exclamation-triangle" title=" " %}}Change{{% /badge %}} FYI, YOU WILL NOW NEED TO CHECKIN WITH YOUR EMAIL ADDRESS TO VIEW THIS GUIDE
 This change helps with analytics and data gathering and is consistent with UserRepo guide (this repo) serving as the root of every new workshop (e.g. this guide is always on latest and greatest featureset which gets cloned into every new workshop)  
@@ -29,4 +28,4 @@ Follow along on this simple tutorial to get up and running with a Hugo formatted
 - The purpose of this workflow is to simplify creation of Fortinet TECWorkshop guides while providing an example CI/CD development environment with maximum re-usability 
 - Here's a visual representation of our process which will be fully explained in each chapter
 
-{{< FTNThugoFlow >}}
+{{< FTNThugoFlow >}} -->
