@@ -10,7 +10,8 @@ description: "Workshops"
 ## Start The Lab
 
 1. In the lab portal, click Start Lab if the environment is not already running.
-[![](/img/1.png)](/img/1.png)
+   
+    [![](/img/1.png)](/img/1.png)
 
 ## Access the instance
 
