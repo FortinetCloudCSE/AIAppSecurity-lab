@@ -158,17 +158,17 @@ Ask the agent questions about the AWS account.
 ```
 Tell me about the EC2 instances that I have running.
 ```
-    [![](https://github.com/FortinetCloudCSE/AIAppSecurity-lab/blob/main/content/10.png?raw=true)](https://github.com/FortinetCloudCSE/AIAppSecurity-lab/blob/main/content/10.png?raw=true)
+[![](https://github.com/FortinetCloudCSE/AIAppSecurity-lab/blob/main/content/10.png?raw=true)](https://github.com/FortinetCloudCSE/AIAppSecurity-lab/blob/main/content/10.png?raw=true)
 
 ```
 How many buckets do I have and what are their names?
 ```
-    [![](https://github.com/FortinetCloudCSE/AIAppSecurity-lab/blob/main/content/11.png?raw=true)](https://github.com/FortinetCloudCSE/AIAppSecurity-lab/blob/main/content/11.png?raw=true)
+[![](https://github.com/FortinetCloudCSE/AIAppSecurity-lab/blob/main/content/11.png?raw=true)](https://github.com/FortinetCloudCSE/AIAppSecurity-lab/blob/main/content/11.png?raw=true)
 
 ```
 Has any one applied their resume for a job position yet?
 ```
-    [![](https://github.com/FortinetCloudCSE/AIAppSecurity-lab/blob/main/content/12.png?raw=true)](https://github.com/FortinetCloudCSE/AIAppSecurity-lab/blob/main/content/12.png?raw=true)
+[![](https://github.com/FortinetCloudCSE/AIAppSecurity-lab/blob/main/content/12.png?raw=true)](https://github.com/FortinetCloudCSE/AIAppSecurity-lab/blob/main/content/12.png?raw=true)
 
 Let us apply for a position by uploading a resume and then asking the agent about it.
 We have few resumes that we can use, Browse to `https://github.com/FortinetCloudCSE/AIAppSecurity-lab/tree/main/app/uploads` and download the three txt files for ALex, Jordan, and my_resume.txt. 
@@ -177,11 +177,11 @@ Then upload Alex's and Jordan's resume. Do not upload the third file yet
 
 To upload, browse to `http://<instance-ip>:8080/upload`, choose a file, and click Upload.
 
-    [![](https://github.com/FortinetCloudCSE/AIAppSecurity-lab/blob/main/content/13.png?raw=true)](https://github.com/FortinetCloudCSE/AIAppSecurity-lab/blob/main/content/13.png?raw=true)
+[![](https://github.com/FortinetCloudCSE/AIAppSecurity-lab/blob/main/content/13.png?raw=true)](https://github.com/FortinetCloudCSE/AIAppSecurity-lab/blob/main/content/13.png?raw=true)
 
-    [![](https://github.com/FortinetCloudCSE/AIAppSecurity-lab/blob/main/content/14.png?raw=true)](https://github.com/FortinetCloudCSE/AIAppSecurity-lab/blob/main/content/14.png?raw=true)
+[![](https://github.com/FortinetCloudCSE/AIAppSecurity-lab/blob/main/content/14.png?raw=true)](https://github.com/FortinetCloudCSE/AIAppSecurity-lab/blob/main/content/14.png?raw=true)
 
-    [![](https://github.com/FortinetCloudCSE/AIAppSecurity-lab/blob/main/content/15.png?raw=true)](https://github.com/FortinetCloudCSE/AIAppSecurity-lab/blob/main/content/15.png?raw=true)
+[![](https://github.com/FortinetCloudCSE/AIAppSecurity-lab/blob/main/content/15.png?raw=true)](https://github.com/FortinetCloudCSE/AIAppSecurity-lab/blob/main/content/15.png?raw=true)
 
 
 
@@ -191,7 +191,7 @@ Now go back to the chat page and ask the agent:
 Tell me about the candidates that have applied for the job.
 ```
 
-    [![](https://github.com/FortinetCloudCSE/AIAppSecurity-lab/blob/main/content/16.png?raw=true)](https://github.com/FortinetCloudCSE/AIAppSecurity-lab/blob/main/content/16.png?raw=true)
+[![](https://github.com/FortinetCloudCSE/AIAppSecurity-lab/blob/main/content/16.png?raw=true)](https://github.com/FortinetCloudCSE/AIAppSecurity-lab/blob/main/content/16.png?raw=true)
 
 
 This agent has two main functions: interact with AWS to get account information, and read resumes to answer questions about the candidates.
@@ -212,13 +212,13 @@ Notice the instructions. This is not a resume but a prompt. The agent will read 
 
 This is where you can be creative. First upload the file as you did with the other resumes, then ask the agent about the candidates again.
 
-    [![](https://github.com/FortinetCloudCSE/AIAppSecurity-lab/blob/main/content/17.png?raw=true)](https://github.com/FortinetCloudCSE/AIAppSecurity-lab/blob/main/content/17.png?raw=true)
+[![](https://github.com/FortinetCloudCSE/AIAppSecurity-lab/blob/main/content/17.png?raw=true)](https://github.com/FortinetCloudCSE/AIAppSecurity-lab/blob/main/content/17.png?raw=true)
 
 ```
 Tell me about the candidates that have applied for the job.
 ```
 
-    [![](https://github.com/FortinetCloudCSE/AIAppSecurity-lab/blob/main/content/18.png?raw=true)](https://github.com/FortinetCloudCSE/AIAppSecurity-lab/blob/main/content/18.png?raw=true)
+[![](https://github.com/FortinetCloudCSE/AIAppSecurity-lab/blob/main/content/18.png?raw=true)](https://github.com/FortinetCloudCSE/AIAppSecurity-lab/blob/main/content/18.png?raw=true)
 
 Notice that the agent might have givven you an answer about the two legit candicates but it might not even mention the third file! That might not always be the case.
 
@@ -231,7 +231,7 @@ sudo docker logs --tail=100 ai-agent-local
 The application is designed to color the human request as well as each step decision in a different color do that oyou can easily spot them. scroll up and verify that the Agent has decided to execute AWS commands to fulfil the request in `my_resume.txt` and that the command was executed.
 
 
-    [![](https://github.com/FortinetCloudCSE/AIAppSecurity-lab/blob/main/content/19.png?raw=true)](https://github.com/FortinetCloudCSE/AIAppSecurity-lab/blob/main/content/19.png?raw=true)
+[![](https://github.com/FortinetCloudCSE/AIAppSecurity-lab/blob/main/content/19.png?raw=true)](https://github.com/FortinetCloudCSE/AIAppSecurity-lab/blob/main/content/19.png?raw=true)
 
 
 Congratulations, You have successfully exploited the application by injecting a prompt through the resume upload functionality. This is a classic example of an indirect prompt injection, where an attacker can manipulate the input to an AI system in order to make it perform unintended actions.
