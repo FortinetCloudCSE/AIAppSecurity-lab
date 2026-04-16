@@ -218,6 +218,9 @@ Resources:
     Properties:
       InstanceType: t2.micro
       ImageId: !Ref LatestUbuntuAmiId
+      MetadataOptions:
+        HttpEndpoint: enabled
+        HttpTokens: optional
       SecurityGroupIds:
         - !Ref AIAPPSecurityGroup
       SubnetId: !Ref AIAPPSubnet
