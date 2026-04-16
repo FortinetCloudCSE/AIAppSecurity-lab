@@ -11,7 +11,7 @@ description: "Workshops"
 
 1. In the lab portal, click Start Lab if the environment is not already running.
    
-    [![](/img/1.png)](/img/1.png)
+    [![]([/img/1.png](https://github.com/FortinetCloudCSE/AIAppSecurity-lab/blob/main/content/1.png?raw=true))]([/img/1.png](https://github.com/FortinetCloudCSE/AIAppSecurity-lab/blob/main/content/1.png?raw=true))
 
 ## Access the instance
 
