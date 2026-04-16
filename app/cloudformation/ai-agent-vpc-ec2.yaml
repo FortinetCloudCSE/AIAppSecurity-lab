@@ -91,6 +91,91 @@ Resources:
         - IpProtocol: "-1"
           CidrIp: "0.0.0.0/0"  # Allow outbound access for SSM
 
+  AIAPPBucketSuffixRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action: sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+
+  AIAPPBucketSuffixFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      Runtime: python3.12
+      Handler: index.handler
+      Role: !GetAtt AIAPPBucketSuffixRole.Arn
+      Timeout: 30
+      Code:
+        ZipFile: |
+          import json
+          import random
+          import urllib.request
+
+
+          def send_response(event, context, status, data, physical_resource_id):
+              body = json.dumps(
+                  {
+                      "Status": status,
+                      "Reason": f"See CloudWatch Logs: {context.log_stream_name}",
+                      "PhysicalResourceId": physical_resource_id,
+                      "StackId": event["StackId"],
+                      "RequestId": event["RequestId"],
+                      "LogicalResourceId": event["LogicalResourceId"],
+                      "Data": data,
+                  }
+              ).encode("utf-8")
+
+              request = urllib.request.Request(
+                  event["ResponseURL"],
+                  data=body,
+                  method="PUT",
+                  headers={"content-type": "", "content-length": str(len(body))},
+              )
+              with urllib.request.urlopen(request):
+                  return
+
+
+          def handler(event, context):
+              physical_resource_id = event.get("PhysicalResourceId", "aiapp-bucket-suffix")
+              try:
+                  if event["RequestType"] in {"Create", "Update"}:
+                      suffix = str(random.randint(10000000, 99999999))
+                      send_response(
+                          event,
+                          context,
+                          "SUCCESS",
+                          {"RandomNumber": suffix},
+                          f"aiapp-bucket-suffix-{suffix}",
+                      )
+                  else:
+                      send_response(event, context, "SUCCESS", {}, physical_resource_id)
+              except Exception as exc:
+                  send_response(
+                      event,
+                      context,
+                      "FAILED",
+                      {"Error": str(exc)},
+                      physical_resource_id,
+                  )
+
+  AIAPPBucketSuffix:
+    Type: Custom::AIAPPBucketSuffix
+    Properties:
+      ServiceToken: !GetAtt AIAPPBucketSuffixFunction.Arn
+
+  AIAPPBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Sub
+        - ai-bucket-${BucketSuffix}
+        - BucketSuffix: !GetAtt AIAPPBucketSuffix.RandomNumber
+
   # IAM Role to allow EC2 instance to communicate with SSM
   AIAPPSsmRole:
     Type: AWS::IAM::Role
@@ -177,6 +262,10 @@ Outputs:
   SecurityGroupId:
     Description: "Security Group ID"
     Value: !Ref AIAPPSecurityGroup
+
+  BucketName:
+    Description: "S3 bucket name for the app"
+    Value: !Ref AIAPPBucket
 
   InstancePublicIp:
     Description: "Public IP address of the EC2 instance"
