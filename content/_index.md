@@ -23,7 +23,9 @@ description: "Workshops"
 
 [![](img/3.png)](img/3.png)
 
-4. In the AWS console search bar, enter EC2 and select the EC2 service.
+{{< figure src="img/3.png" >}}
+
+1. In the AWS console search bar, enter EC2 and select the EC2 service.
 
 [![](img/4.png)](img/4.png)
 
